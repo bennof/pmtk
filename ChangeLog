@@ -1,1 +1,167 @@
-commit 73d245c Author: Benjamin Falkner <contact@BenjaminFalkner.de> Date: 2014-06-03 Getting started AUTHORS ChangeLog Makefile.am NEWS README autogen.sh configure.ac xdr/Makefile.am
+commit 9cf4e44
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    Testing release / missing python data interface / chimera plugin not implemented
+
+AUTHORS
+ChangeLog
+autogen.sh
+python/Makefile.am
+
+commit 7cd4aa8
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    testing for upload
+
+autogen.sh
+python/CalcPanel.py
+python/ChiGetRef.py
+python/ChiPlayer.py
+python/Main.py
+python/ModelDB.py
+python/Plot.py
+python/StatusLine.py
+python/TkTools.py
+python/TrajInfo.py
+python/TrajList.py
+python/TrajMaker.py
+python/__init__.py
+src/pmdfilter.c
+src/pmdlintraj.c
+src/pmdpca.c
+src/pmmconvert.c
+src/pmmlintraj.c
+src/pmmpca.c
+src/pmmrmsd.c
+
+commit f395bf0
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    final testing
+
+Makefile.am
+autogen.sh
+
+commit d5c50bd
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    python added
+
+autogen.sh
+python/CalcPanel.py
+python/ChiGetRef.py
+python/ChiPlayer.py
+python/Main.py
+python/Makefile.am
+python/ModelDB.py
+python/Plot.py
+python/StatusLine.py
+python/TkTools.py
+python/TrajInfo.py
+python/TrajList.py
+python/TrajMaker.py
+python/__init__.py
+src/config.h.in
+
+commit 5dee4e1
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    c files added
+
+autogen.sh
+configure.ac
+src/Makefile.am
+src/config.h.in
+src/lib/Makefile.am
+src/lib/calc.c
+src/lib/config.h
+src/lib/density.c
+src/lib/pmtk.h
+src/pmdfilter.c
+src/pmdlintraj.c
+src/pmdpca.c
+src/pmmconvert.c
+src/pmmlintraj.c
+src/pmmpca.c
+src/pmmrmsd.c
+xdr/Makefile.am
+
+commit 7233089
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    TODO: Fix core lib
+
+commit 630c6f8
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    TODO:
+
+commit ef084a5
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    TODO: Fix core lib
+
+commit c89e6b3
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-04
+
+    xdr working
+
+.gitignore
+COPYING
+ChangeLog
+Makefile.am
+autogen.sh
+configure.ac
+src/Makefile.am
+src/lib/Makefile.am
+xdr/Makefile.am
+
+commit e66eb9a
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-03
+
+    add files
+
+COPYING
+chimera/Makefile.am
+python/Makefile.am
+src/Makefile.am
+src/config.h.in
+src/lib/Makefile.am
+src/lib/calc.c
+src/lib/calc.h
+src/lib/calctools.c
+src/lib/config.h
+src/lib/density.c
+src/lib/model.c
+src/lib/mrc.c
+src/lib/mrc.h
+src/lib/pdb.c
+src/lib/pdb.h
+src/lib/pmtk.h
+src/lib/protein.c
+src/lib/vec.h
+
+commit 73d245c
+Author: Benjamin Falkner <contact@BenjaminFalkner.de>
+Date:   2014-06-03
+
+    Getting started
+
+AUTHORS
+ChangeLog
+Makefile.am
+NEWS
+README
+autogen.sh
+configure.ac
+xdr/Makefile.am

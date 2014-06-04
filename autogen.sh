@@ -291,11 +291,11 @@ git commit --allow-empty -m "TODO: $*"
 }
 
 updateChangeLog () {
-echo $(git log --stat --name-only --date=short --abbrev-commit) > ChangeLog
+git log --stat --name-only --date=short --abbrev-commit > ChangeLog
 }
 
 updateAuthors () {
-echo $(git log --format='%aN <%aE>'|sort -u) > AUTHORS
+git log --format='%aN <%aE>'|sort -u > AUTHORS
 }
 
 cfilesC () {

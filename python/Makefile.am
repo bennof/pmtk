@@ -1,4 +1,4 @@
-pmtk_PYTHON = 
+pmtk_PYTHON = \
    CalcPanel.py \
    ChiGetRef.py \
    ChiPlayer.py \
