@@ -793,13 +793,17 @@ int trajectoryArray2D(float **out, float *center,float* vector, float scale, siz
 	size_t i,j;
 
 	scale/=cols;
-	s=(cols/2-cols)*scale;
+	scale*=2;
+	s=((float)(cols/2)-cols)*scale;
+
+	printf("(%f,+-%f)\n",s,scale);
 
 	for(i=0;i<cols;i++){
 		h=out[i];
 		c=center;
 		v=vector;
 		s += scale;
+		printf("<%lu> %f\n",i,s);
 		for(j=0;j<rows;j++){
 			(*h++)=(*c++)+s*(*v++);
 		}

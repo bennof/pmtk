@@ -27,6 +27,7 @@ lib@NAME@_a_CFLAGS = $(AM_CFLAGS)
 
 lib_LTLIBRARIES = lib@NAME@.la
 lib@NAME@_la_SOURCES = calc.h config.h model.c                          mrc.h pdb.h protein.c			  calc.c calctools.c density.c			  mrc.c pdb.c pmtk.h vec.h
+
 include_HEADERS = pmtk.h vec.h
 
 

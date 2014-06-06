@@ -3,7 +3,7 @@
   AM_INIT_AUTOMAKE([0.1 foreign])
   AC_CONFIG_MACRO_DIR([m4])
 
-  LT_INIT
+  ACLOCAL=" "
 
   AC_SUBST(NAME,[pmtk])
 
@@ -68,11 +68,15 @@
 
   # PROGRAMS
   AC_PROG_CC
+  AC_PROG_LN_S
+  AC_PROG_AWK
+  AC_PROG_CPP
   AC_PROG_INSTALL
   AC_PROG_RANLIB
   AC_PROG_MAKE_SET
   AC_PROG_CXX
 
+  LT_INIT(dlopen shared pic-only)
 
   #special programs
   AC_CHECK_PROGS(TAR,[tar],none)
@@ -126,7 +130,7 @@
 
 
   # PYTHON
-  AM_PATH_PYTHON([2.5])
+  AM_PATH_PYTHON([2.4])
 
   # Adding macro
   AC_DEFUN([AM_CHECK_PYTHON_HEADERS],

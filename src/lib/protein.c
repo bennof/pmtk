@@ -331,6 +331,6 @@ PMProtein *pmRmLast     (PMProtein *protein)
 
 PMProtein *pmLinTraj   (PMProtein *out,PMProtein *center,PMProtein *vector,size_t frame,float scale)
 {
-	trajectoryArray2D(out->pany.data, center->pany.data[0],vector->pany.data[frame], scale, out->pany.frames,out->pany.records);
+	trajectoryArray2D(out->pany.data,center->pany.data[0],vector->pany.data[frame], scale, out->pany.frames,out->pany.records);
 	return out;
 }

@@ -117,7 +117,7 @@ int main(int argc,  char *argv[])
 	}
 
 	
-	pmCreatefReff(center,cframes);
+	out = pmCreatefReff(center,cframes);
         pmLinTraj(out,center,evecs,idx,peak);
 
 	if(fnout){

@@ -55,7 +55,7 @@ createConfAC () {
   AM_INIT_AUTOMAKE([$VERSION foreign])
   AC_CONFIG_MACRO_DIR([m4])
 
-  LT_INIT
+  ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
   AC_SUBST(NAME,[$NAME])
 
@@ -103,6 +103,10 @@ createConfAC () {
 	"Copyright (C) "YEARS" " AUTHORS "\n"\
 	"Contact: " MAIL"\n"\
 	"Web: " WWW"\n"
+
+
+	#define str(s) xstr(s)
+	#define xstr(s) #s
   ])
 
   # PLATFORM 
@@ -128,11 +132,15 @@ createConfAC () {
 
   # PROGRAMS
   AC_PROG_CC
+  AC_PROG_LN_S
+  AC_PROG_AWK
+  AC_PROG_CPP
   AC_PROG_INSTALL
   AC_PROG_RANLIB
   AC_PROG_MAKE_SET
   AC_PROG_CXX
 
+  LT_INIT(dlopen shared pic-only)
 
   #special programs
   AC_CHECK_PROGS(TAR,[tar],none)
@@ -186,7 +194,7 @@ createConfAC () {
 
 
   # PYTHON
-  AM_PATH_PYTHON([2.5])
+  AM_PATH_PYTHON([2.4])
 
   # Adding macro
   AC_DEFUN([AM_CHECK_PYTHON_HEADERS],
@@ -389,7 +397,9 @@ updateChangeLog
 
 upload() {
 update
-git rebase -i
+git commit -a
+git rebase -i --root
+git push -u origin master
 }
 
 
@@ -409,7 +419,7 @@ make install
 
 ARGUMENTS:
 help		print this help
-init		init autotools and some files
+init		init autoconf.ac 
 update <test>	updates all data
 clean 		clean all data (not needed for "./autogen.sh")
 todo <text>     add TODO info
@@ -423,9 +433,9 @@ case $1 in
 help) help;exit;;
 init) shift; init $@;;
 clean) shift; clean $@;;
-update) shift; update;;
-upload) shift; upload;;
+update) shift; update $@;;
+upload) shift; upload $@;;
 todo) shift; todo $@;;
-test) shift; cfilesC;;
+test) shift; cfilesC $@;;
 *) default; $@;;
 esac

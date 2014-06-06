@@ -208,6 +208,7 @@ int pmFWriteFramesPDB(FILE* f, PMAtomDesc* info, float **data,size_t models,size
 	float *datap,x,y,z;
 	size_t i,j;
 	char *c;
+	PMAtomDesc* inf;
 
 	// Header
 	fprintf(f,"REMARK PDB OUTPUT\n"
@@ -220,19 +221,20 @@ int pmFWriteFramesPDB(FILE* f, PMAtomDesc* info, float **data,size_t models,size
     	for(i=0;i<models;i++){
 	      fprintf(f,"MODEL   %4zu\n",i);
 	      datap=*data;
+	      inf=info;
 	      for(j=0;j<atoms;j++){
 	        x=*datap++;
 	        y=*datap++;
 	        z=*datap++;
-	        c = (char*) &(*info++);
+	        c = (char*) &(*inf++);
 	        fprintf(f,"%6s%.21s   %8.3f%8.3f%8.3f%6.2f%6.2f\n",
-	          (*c=='H')?"HETATM":"ATOM  ",
-	          &c[1],
-	          x,
-	          y,
-	          z,
-	          0.0,
-	          0.0);
+	        (*c=='H')?"HETATM":"ATOM  ",
+	        &c[1],
+	        x,
+	        y,
+	        z,
+	        0.0,
+	        0.0);
 	      }
 	      data++;
 	      fprintf(f,"ENDMDL\n");
