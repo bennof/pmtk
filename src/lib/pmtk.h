@@ -94,26 +94,25 @@ PMProtein *pmCreatefRef (PMProtein *ref);
 PMProtein *pmCreatefReff(PMProtein *ref,size_t frames);
 PMProtein *pmDelete     (PMProtein *protein);
 PMProtein *pmAllocFrames(PMProtein *protein,size_t frames);
-//PMProtein *pmOpen       (PMProtein *protein,const char *fname);
-//PMProtein *pmOpenRef    (PMProtein *protein,const char *fname);
-//PMProtein *pmSave       (PMProtein *protein,const char *fname);
+PMProtein *pmOpen       (PMProtein *protein,const char *fname);
+PMProtein *pmOpenRef    (PMProtein *protein,const char *fname);
+PMProtein *pmSave       (PMProtein *protein,const char *fname);
 PMProtein *pmRmLast     (PMProtein *protein);
 
 //char *pmInfo            (PMProtein *protein,char *buffer,size_t n);
+size_t    pmGetDF       (PMProtein *Protein);
 
-void pmPrintInfo      (PMProtein *ref);
-void pmPrintInfoM     (PMProteinModel* ref);
-void pmPrintInfoD     (PMProteinDensity* ref);
+void pmPrintInfo        (PMProtein *ref);
+void pmPrintInfoM       (PMProteinModel* ref);
+void pmPrintInfoD       (PMProteinDensity* ref);
 
-size_t    pmGetDF     (PMProtein *Protein);
+PMProtein *pmAddFrame   (PMProtein *protein,float *frame,size_t size);
+PMProtein *pmAddFrames  (PMProtein *protein,float **frames,size_t cframes,size_t size);
 
-PMProtein *pmAddFrame (PMProtein *protein,float *frame,size_t size);
-PMProtein *pmAddFrames(PMProtein *protein,float **frames,size_t cframes,size_t size);
-
-PMProtein *pmReadP    (PMProtein        *protein,const char* fname);
-PMProtein *pmReadD    (PMProteinDensity *protein,const char* fname);
-PMProtein *pmReadM    (PMProteinModel   *protein,const char* fname);
-PMProtein *pmReadRefM (PMProteinModel   *protein,const char* fname);
+PMProtein *pmReadP      (PMProtein        *protein,const char* fname);
+PMProtein *pmReadD      (PMProteinDensity *protein,const char* fname);
+PMProtein *pmReadM      (PMProteinModel   *protein,const char* fname);
+PMProtein *pmReadRefM   (PMProteinModel   *protein,const char* fname);
 
 PMProtein *pmWriteP  (PMProtein        *protein,const char* fname);
 PMProtein *pmWriteD  (PMProteinDensity *protein,const char* fname);

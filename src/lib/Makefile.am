@@ -22,11 +22,12 @@ AM_LDFLAGS += $(shell make -C ../../xdr getstaticlibpath)
 endif
 
 noinst_LIBRARIES = lib@NAME@.a
-lib@NAME@_a_SOURCES = calc.h	config.h model.c                         mrc.h pdb.h protein.c			 calc.c	calctools.c density.c			 mrc.c pdb.c pmtk.h vec.h
+lib@NAME@_a_SOURCES = calc.h config.h model.c mrc.h pdb.h protein.c calc.c calctools.c density.c  mrc.c pdb.c pmtk.h vec.h  protein_atomic_info.c protein_io_pdb.c protein_io_xtc.c protein_io_mrc.c protein_io.c
 lib@NAME@_a_CFLAGS = $(AM_CFLAGS)
 
 lib_LTLIBRARIES = lib@NAME@.la
-lib@NAME@_la_SOURCES = calc.h config.h model.c                          mrc.h pdb.h protein.c			  calc.c calctools.c density.c			  mrc.c pdb.c pmtk.h vec.h
+lib@NAME@_la_SOURCES = calc.h config.h model.c mrc.h pdb.h protein.c calc.c calctools.c density.c mrc.c pdb.c pmtk.h vec.h
+lib@NAME@_la_CFLAGS = $(AM_CFLAGS)
 
 include_HEADERS = pmtk.h vec.h
 

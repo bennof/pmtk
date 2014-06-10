@@ -43,6 +43,10 @@
 	#define OPTIONS_HEAD 	"Options:\n"
 
 	#define VERSION_STRING(PNAME) 	PNAME " " PACKAGE " (" VERSION " rev" REVISION ")\n"	"Copyright (C) "YEARS" " AUTHORS "\n"	"Contact: " MAIL"\n"	"Web: " WWW"\n"
+
+
+	#define str(s) xstr(s)
+	#define xstr(s) #s
   ])
 
   # PLATFORM 

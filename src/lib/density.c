@@ -59,6 +59,9 @@ void pmPrintInfoD(PMProteinDensity* ref)
 
 PMProtein *pmReadD   (PMProteinDensity *protein,const char* fname)
 {
+#ifdef NEWONE_IO
+	return pmOpen((PMProteinModel*)protein,fname);	
+#else
 	PMMRCHeader head;
 	float *h;
 	fprintf(stdout,"MRC read: %s",fname);
@@ -87,6 +90,7 @@ PMProtein *pmReadD   (PMProteinDensity *protein,const char* fname)
 	pmAddFrame((PMProtein*)protein,h,protein->records);
 	fputs(" [ok]\n",stdout);
 	return (PMProtein*)protein;
+#endif
 }
 
 #ifndef STRING_BUFFER_SIZE
@@ -94,6 +98,9 @@ PMProtein *pmReadD   (PMProteinDensity *protein,const char* fname)
 #endif
 PMProtein *pmWriteD  (PMProteinDensity *protein,const char* fname)
 {
+#ifdef NEWONE_IO
+	return pmSave((PMProteinModel*)protein,fname);	
+#else
 	PMMRCHeader head;
 	char buffer[STRING_BUFFER_SIZE];
 	char *e,*p;
@@ -136,6 +143,7 @@ PMProtein *pmWriteD  (PMProteinDensity *protein,const char* fname)
 		}
 	}
 	return (PMProtein*)protein;
+#endif
 }
 PMProtein *pmWriteSD  (PMProteinDensity *protein,const char* fname,size_t idx)
 {
@@ -149,6 +157,9 @@ PMProtein *pmWriteSD  (PMProteinDensity *protein,const char* fname,size_t idx)
 		return 0;
 	return (PMProtein*)protein;
 }
+
+
+//// END IO
 
 
 PMProtein *pmNormalize  (PMProteinDensity *out,PMProteinDensity *a)

@@ -29,11 +29,15 @@ extern "C"
 #endif
 
 #include "pmtk.h"
+#include "calc.h"
+
+#ifdef NEWONE
+#include "protein_atomic_info.h"
+#else
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "pdb.h"
-#include "calc.h"
 
 
 
@@ -91,6 +95,7 @@ static PMProteinAtomDesc *dub_info(PMProteinModel *protein)
 	return protein->desc;
 }
 
+#endif
 
 void pmPrintInfoM(PMProteinModel* ref)
 {
@@ -104,18 +109,29 @@ void pmPrintInfoM(PMProteinModel* ref)
 
 PMProteinModel *pmInitM_ (PMProteinModel *protein,PMProteinModel *ref)
 {	
+#ifdef NEWONE
+	protein->desc = pmDublicateAtomDesc(ref);
+#else
 	protein->desc = dub_info(ref);
+#endif
 	return protein;
 }
 
 PMProteinModel *pmDelM_ (PMProteinModel *protein)
 {
+#ifdef NEWONE
+	protein->desc = pmDeleteAtomDesc(protein);
+#else
 	protein->desc = del_info(protein);
+#endif
 	return protein;
 }
 
 PMProtein *pmReadM   (PMProteinModel   *protein,const char* fname)
 {
+#ifdef NEWONE_IO
+	return pmOpen((PMProteinModel*)protein,fname);	
+#else
 	XDRFILE *f;
 	int N,S,e,i,j=0;
 	float t,p;
@@ -169,7 +185,11 @@ PMProtein *pmReadM   (PMProteinModel   *protein,const char* fname)
 			buffer = pmFReadPDBFrameFull(F,&info_r,&iatoms);
 			if(buffer){
 				pmAddFrame((PMProtein*)protein,buffer,protein->records);
+#ifdef NEWONE
+				protein->desc = pmCreateAtomDesc(iatoms,info_r);
+#else
 				protein->desc = new_info(iatoms,info_r);
+#endif
 				protein->records=iatoms*3;
 			}
 		}
@@ -187,10 +207,14 @@ PMProtein *pmReadM   (PMProteinModel   *protein,const char* fname)
 		break;
 	}
 	return (PMProtein*)protein;
+#endif
 }
 
 PMProtein *pmReadRefM   (PMProteinModel   *protein,const char* fname)
 {
+#ifdef NEWONE_IO
+	return pmOpenRef((PMProteinModel*)protein,fname);
+#else
 	FILE *F;
 	float *buffer;
 	PMAtomDesc *info_r;
@@ -203,7 +227,11 @@ PMProtein *pmReadRefM   (PMProteinModel   *protein,const char* fname)
 			buffer = pmFReadPDBFrameFull(F,&info_r,&iatoms);
 			if(buffer){
 				free(buffer);
+#ifdef NEWONE
+				protein->desc = pmCreateAtomDesc(iatoms,info_r);
+#else
 				protein->desc = new_info(iatoms,info_r);
+#endif
 				protein->records=iatoms*3;
 			}
 		}
@@ -215,10 +243,14 @@ PMProtein *pmReadRefM   (PMProteinModel   *protein,const char* fname)
 		break;
 	}
 	return (PMProtein*)protein;
+#endif
 }
 
 PMProtein *pmWriteM  (PMProteinModel   *protein,const char* fname)
 {
+#ifdef NEWONE_IO
+	return pmSave((PMProteinModel*)protein,fname);	
+#else
 	XDRFILE *f;
 	float **H,*b;
 	float h[9]={1,0,0,0,1,0,0,0,1};
@@ -265,7 +297,7 @@ PMProtein *pmWriteM  (PMProteinModel   *protein,const char* fname)
 		break;
 	}
 	return (PMProtein*)protein;
-
+#endif
 }
 
 PMProtein *pmWriteSM  (PMProteinModel   *protein,const char* fname,size_t idx)
@@ -317,6 +349,11 @@ PMProtein *pmWriteSM  (PMProteinModel   *protein,const char* fname,size_t idx)
 	return (PMProtein*)protein;
 
 }
+
+/////// END IO
+
+
+
 
 float *pmRMSD        (PMProteinModel *out,PMProteinModel *ref,size_t idx)
 {

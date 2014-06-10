@@ -40,13 +40,14 @@ HELP_HEAD("Model PCA")
 USAGE("pmmpca","OPTION","PDB/XTC File") 
 OPTIONS_HEAD
 "  --help -h                 Display this help\n"
-"  --mean -m <model file>  Write average model to <model file>\n"
+"  --mean -m <model file>    Write average model to <model file>\n"
 "  --variance  -v <model file>\n"
 "                            Write variance model to <model file>\n"
-"  --evecs -e <model file> Write eigenvectors to <model file>\n"
+"  --evecs -e <model file>   Write eigenvectors to <model file>\n"
 "  --evals -V <file>         Write eigenvalues to <file>\n"
 "  --length -l <int>         Set the number of eigenvectors to be written\n"
 "  --structure -s <pdb file> Structure reference\n"
+"  --evec-sacle -S <float>   Scaling eigenvectors\n"
 "  --align -a                Align data\n\n";
 
 static char version [] =
@@ -61,6 +62,7 @@ int main(int argc,  char *argv[])
         PMProtein *data,*mean,*evecs;
         float *evals=0;
         char *fnevecs=0, *fnmean=0, *fnvar=0, *fnevals=0;
+	float S=1.0;
 	
 	data = pmCreateNew(PM_TYPE_MODEL);
         if(!data)
@@ -92,6 +94,10 @@ int main(int argc,  char *argv[])
                 else if(!strcmp(argv[i],"-v") || !strcmp(argv[i],"--variance")){
                         if(argv[i+1][0]!='-')
                                 fnvar=argv[++i];
+                }
+                else if(!strcmp(argv[i],"-S") || !strcmp(argv[i],"--evec-scale")){
+                        if(argv[i+1][0]!='-')
+                                S=atof(argv[++i]);
                 }
                 else if(!strcmp(argv[i],"-e") || !strcmp(argv[i],"--evecs")){
                         if(argv[i+1][0]!='-')
@@ -159,6 +165,9 @@ int main(int argc,  char *argv[])
 		if(length<=0) length=pmGetDF(data);
 		evecs = pmCreatefReff(data,length);
 		evals = pmPCA(evecs,data,mean);
+		if(S!=1.0){
+			pmScale(evecs,evecs,S);
+		}
 		if(fnevecs) 
 			SAY("Writing %s ...",fnevecs);
 			pmWriteM((PMProteinModel*)evecs,fnevecs);

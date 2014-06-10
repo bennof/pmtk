@@ -1,76 +1,17 @@
-/***
-
-    ./src/lib/pdb.c 
-
-    Protein Motion TK (pmtk) - A library and several tools to estimate protein motions from varying input
-    Copyright (C) 2009-2014  Benjamin Falkner
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-*/
-
-
-
-
-
 #ifdef __cplusplus
 extern "C"
 #endif
 
+#include "pmtk.h"
+#include "config.h"
+#include "protein_atomic_info.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "pdb.h"
 
 #ifndef ALLOCPAGESIZE
 #define ALLOCPAGESIZE 1024
 #endif
-
-#define STRINGIFY(x) #x
-
-int getType(const char* name)
-{
-	char *p=0,*e=(char*)name;
-	while(*e){
-		if(*e=='.')
-			p=e;
-		e++;
-	}
-	if(!p && e-p!=5)
-		return 0;
-
-	if((p[1]=='p' || p[1]=='P') &&
-	   (p[2]=='d' || p[2]=='D') &&
-	   (p[3]=='b' || p[3]=='B')){
-		return PM_ATOM_FILE_PDB;
-	}
-	else if(
-	   (p[1]=='x' || p[1]=='X') &&
-	   (p[2]=='t' || p[2]=='T') &&
-	   (p[3]=='c' || p[3]=='C')){
-	    return PM_ATOM_FILE_XDR;
-	}
-	return 0;
-}
-
-static void fail(char* msg)
-{
-	fprintf(stderr,"ERROR: %s\n",msg); 
-	exit(1);
-}
-
 
 static inline void _readLineS(char *line, float coords[])
 {
@@ -100,9 +41,7 @@ static inline void _readLine(char *line, PMAtomDesc *info, float coords[])
 
 
 
-
-
-float *pmFReadPDBFrameFull(FILE* stream,PMAtomDesc** atominfo,size_t *atoms)
+static float *pmFReadPDBFrameFull(FILE* stream,PMAtomDesc** atominfo,size_t *atoms)
 {
 	size_t i=0;
 	char linebuffer[128];
@@ -125,12 +64,21 @@ float *pmFReadPDBFrameFull(FILE* stream,PMAtomDesc** atominfo,size_t *atoms)
 
 	        //allocate more memory
 	        if(!(i%alloc)){
-		        //fprintf(stderr,">>>>>>%p<<<<<<<\n",coords);
 	        	c = (float*)realloc(coords,(i/alloc+1)*alloc*3*sizeof(float));
-			if(!c) fail(__FILE__"[" STRINGIFY(__LINE__) "]: failed to allocate coordinates array");	
+			if(!c){
+				WARN("Failed to allocate coordinates array");	
+				free(coords);
+				free(info);
+				return 0;
+			}
 			else coords = (float*) c;
 	        	a = (PMAtomDesc*) realloc(info,(i/alloc+1)*alloc*sizeof(PMAtomDesc));
-			if(!a) fail(__FILE__"[" STRINGIFY(__LINE__) "]: failed to allocate atomic info array");	
+			if(!c){
+				WARN("Failed to allocate info array");	
+				free(coords);
+				free(info);
+				return 0;
+			}
 			else info = (PMAtomDesc *) a;
 
 			c=&coords[i*3];
@@ -164,14 +112,18 @@ float *pmFReadPDBFrameFull(FILE* stream,PMAtomDesc** atominfo,size_t *atoms)
 	return coords;
 }
 
-float *pmFReadPDBFramePlain(FILE* stream,size_t *atoms)
+static float *pmFReadPDBFramePlain(FILE* stream,size_t *atoms)
 {
 	size_t i=0;
 	char linebuffer[128];
 	float *coords,*c;
 
 	coords = (float*)malloc(*atoms*3*sizeof(float));
-	if(!coords) fail(__FILE__"[" STRINGIFY(__LINE__) "]: failed to allocate coordinates array");	
+	if(!coords){
+		WARN("Failed to allocate coordinates array");	
+		free(coords);
+		return 0;
+	}
 	c=coords;
 
 	while(fgets(linebuffer,128,stream)){
@@ -266,25 +218,76 @@ int pmFWriteFramesPDB(FILE* f, PMAtomDesc* info, float **data,size_t models,size
 	return 0;
 }
 
-
-
-/*
-typedef struct _PMPDBFile{
-	FILE *file;
-	size_t model;
-	size_t atoms;
-}PMStructFile;
-
-
-PMStructFile *pmSFOpen(const char *fname,const char *mode)
+PMProteinModel *pdbopen(PMProteinModel *protein,const char * filename, int mode)
 {
-		
+	FILE *f;
+	size_t iatoms;
+	PMAtomDesc *info_r;
+	PMProteinModel *p=protein;
+	float *buffer;
+
+	SAY("Open: %s",filename);
+	f = fopen(filename,"r");
+	if (!f){
+		WARN("Failed open: %s",filename);	
+		return 0;
+	}
+	if(!p)
+		p=(PMProteinModel*)pmCreateNew(PM_TYPE_MODEL);
+	if(!p->type!=PM_TYPE_DENSITY){
+		WARN("Mixing different representations (abort): %s",filename);
+		if(p!=protein) pmDelete((PMProtein*)p);
+		return 0;
+	}
+	iatoms = p->records/3;
+
+	if(!p->desc || p->desc->atoms){
+		buffer = pmFReadPDBFrameFull(f,&info_r,&iatoms);
+		if(buffer){
+			if(mode==1){
+				free(buffer);
+				if(p->records && p->records!=3*iatoms){
+					WARN("Model differs (abort): %s",filename);
+				}
+				protein->desc = pmCreateAtomDesc(iatoms,info_r);
+				p->records=iatoms*3;
+			}
+			if(!pmAddFrame((PMProtein*)p,buffer,p->records)){
+				WARN("Model differs (abort): %s",filename);
+				fclose(f);
+				if(p!=protein) pmDelete((PMProtein*)p);
+				return 0;
+			}
+			p->desc = pmCreateAtomDesc(iatoms,info_r);
+			p->records=iatoms*3;
+		}
+	}
+	while(!feof(f)){
+		buffer = pmFReadPDBFramePlain(f,&p->desc->natoms);
+		if(buffer)
+			if(!pmAddFrame((PMProtein*)p,buffer,p->records)){
+				WARN("Model differs (ignored): %s",filename);
+			}
+	}
+	fclose(f);
+	return p;
 }
-*/
 
 
+PMProteinModel *pdbsave(PMProteinModel *protein,const char * filename, int mode)
+{
+	FILE *f;
+	SAY("Open: %s",filename);
+	if(!protein->type!=PM_TYPE_MODEL){
+		WARN("Mixing different representations (aborted): %s",filename);
+		return 0;
+	}
 
-
+        f = fopen(filename,"w");
+	pmFWriteFramesPDB(f,protein->desc->atoms,protein->data,protein->frames,protein->records/3);
+	fclose(f);
+	return protein;
+}
 
 
 
