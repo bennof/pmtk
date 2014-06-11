@@ -155,7 +155,7 @@ static float *pmFReadPDBFramePlain(FILE* stream,size_t *atoms)
 }
 
 
-int pmFWriteFramesPDB(FILE* f, PMAtomDesc* info, float **data,size_t models,size_t atoms)
+static int pmFWriteFramesPDB(FILE* f, PMAtomDesc* info, float **data,size_t models,size_t atoms)
 {
 	float *datap,x,y,z;
 	size_t i,j;
@@ -234,7 +234,7 @@ PMProteinModel *pdbopen(PMProteinModel *protein,const char * filename, int mode)
 	}
 	if(!p)
 		p=(PMProteinModel*)pmCreateNew(PM_TYPE_MODEL);
-	if(!p->type!=PM_TYPE_DENSITY){
+	if(p->type!=PM_TYPE_MODEL){
 		WARN("Mixing different representations (abort): %s",filename);
 		if(p!=protein) pmDelete((PMProtein*)p);
 		return 0;
@@ -277,8 +277,8 @@ PMProteinModel *pdbopen(PMProteinModel *protein,const char * filename, int mode)
 PMProteinModel *pdbsave(PMProteinModel *protein,const char * filename, int mode)
 {
 	FILE *f;
-	SAY("Open: %s",filename);
-	if(!protein->type!=PM_TYPE_MODEL){
+	SAY("Save: %s",filename);
+	if(protein->type!=PM_TYPE_MODEL){
 		WARN("Mixing different representations (aborted): %s",filename);
 		return 0;
 	}

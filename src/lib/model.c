@@ -23,6 +23,9 @@
 
 
 
+#define NEWONE_IO
+
+
 
 #ifdef __cplusplus
 extern "C" 
@@ -31,71 +34,12 @@ extern "C"
 #include "pmtk.h"
 #include "calc.h"
 
-#ifdef NEWONE
+
+#include "pdb.h"
 #include "protein_atomic_info.h"
-#else
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "pdb.h"
-
-
-
-struct _PMProteinAtomDesc{
-	size_t refcount;
-	size_t natoms;
-	PMProteinAtomDesc *next;
-	PMAtomDesc *atoms;
-};
-
-PMProteinAtomDesc *PM_INFO_STACK=0;
-
-static PMProteinAtomDesc *new_info(size_t natoms, PMAtomDesc *atoms)
-{
-	PMProteinAtomDesc* i;
-	i = (PMProteinAtomDesc*)malloc(sizeof(PMProteinAtomDesc));
-	i->refcount=1;
-	i->natoms=natoms;
-	i->atoms=atoms;
-	i->next=PM_INFO_STACK;
-	PM_INFO_STACK=i->next;
-	return i;
-}
-static PMProteinAtomDesc *del_info(PMProteinModel *protein)
-{
-	PMProteinAtomDesc *i,*p;
-	p = protein->desc;
-
-	if(!p)
-		return 0;
-
-	p->refcount--;
-	if(!p->refcount){
-		//remove info
-		i=PM_INFO_STACK;
-		if(i==p){
-			PM_INFO_STACK = i->next;
-		}
-		else{
-			while(i && (i->next != p))
-				i=i->next;
-			if(i)
-				i->next=p->next;
-		}
-		free(p->atoms);
-		free(p);
-	}
-	return 0;
-}
-
-static PMProteinAtomDesc *dub_info(PMProteinModel *protein)
-{
-	if(protein->desc)
-		protein->desc->refcount++;
-	return protein->desc;
-}
-
-#endif
 
 void pmPrintInfoM(PMProteinModel* ref)
 {
@@ -109,21 +53,13 @@ void pmPrintInfoM(PMProteinModel* ref)
 
 PMProteinModel *pmInitM_ (PMProteinModel *protein,PMProteinModel *ref)
 {	
-#ifdef NEWONE
 	protein->desc = pmDublicateAtomDesc(ref);
-#else
-	protein->desc = dub_info(ref);
-#endif
 	return protein;
 }
 
 PMProteinModel *pmDelM_ (PMProteinModel *protein)
 {
-#ifdef NEWONE
 	protein->desc = pmDeleteAtomDesc(protein);
-#else
-	protein->desc = del_info(protein);
-#endif
 	return protein;
 }
 
@@ -185,11 +121,7 @@ PMProtein *pmReadM   (PMProteinModel   *protein,const char* fname)
 			buffer = pmFReadPDBFrameFull(F,&info_r,&iatoms);
 			if(buffer){
 				pmAddFrame((PMProtein*)protein,buffer,protein->records);
-#ifdef NEWONE
 				protein->desc = pmCreateAtomDesc(iatoms,info_r);
-#else
-				protein->desc = new_info(iatoms,info_r);
-#endif
 				protein->records=iatoms*3;
 			}
 		}
@@ -227,11 +159,7 @@ PMProtein *pmReadRefM   (PMProteinModel   *protein,const char* fname)
 			buffer = pmFReadPDBFrameFull(F,&info_r,&iatoms);
 			if(buffer){
 				free(buffer);
-#ifdef NEWONE
 				protein->desc = pmCreateAtomDesc(iatoms,info_r);
-#else
-				protein->desc = new_info(iatoms,info_r);
-#endif
 				protein->records=iatoms*3;
 			}
 		}

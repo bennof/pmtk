@@ -30,6 +30,7 @@ extern "C" {
 #endif
 
 
+#include "protein_atomic_info.h"
 
 #define PMATOM_TYPE_ATOM       'A'
 #define PMATOM_TYPE_HETATM     'H'
@@ -38,16 +39,16 @@ extern "C" {
 /**
  * structure stores pdb like atom information
  */
-typedef struct _PMAtomDesc{
-	char type; 		/**< Record name id ATOM or HETATOM @see coord types */
-	char serial[6];		/**< Atom  serial number */
-	char name[4];		/**< Atom name */
-	char altLoc;		/**< Alternate location indicator */
-	char resName[4];	/**< Residue name */
-	char chainID;		/**< Chain identifier */
-	char resSeq[4];		/**< Residue sequence number */
-	char iCode;		/**< Code for insertion of residues */
-} PMAtomDesc;
+//typedef struct _PMAtomDesc{
+//	char type; 		/**< Record name id ATOM or HETATOM @see coord types */
+//	char serial[6];		/**< Atom  serial number */
+//	char name[4];		/**< Atom name */
+//	char altLoc;		/**< Alternate location indicator */
+//	char resName[4];	/**< Residue name */
+//	char chainID;		/**< Chain identifier */
+//	char resSeq[4];		/**< Residue sequence number */
+//	char iCode;		/**< Code for insertion of residues */
+//} PMAtomDesc;
 
 
 int getType(const char* name);

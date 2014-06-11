@@ -92,11 +92,15 @@ typedef union _PMProtein {
 PMProtein *pmCreateNew  (int type);
 PMProtein *pmCreatefRef (PMProtein *ref);
 PMProtein *pmCreatefReff(PMProtein *ref,size_t frames);
+
 PMProtein *pmDelete     (PMProtein *protein);
+
 PMProtein *pmAllocFrames(PMProtein *protein,size_t frames);
+
 PMProtein *pmOpen       (PMProtein *protein,const char *fname);
 PMProtein *pmOpenRef    (PMProtein *protein,const char *fname);
 PMProtein *pmSave       (PMProtein *protein,const char *fname);
+
 PMProtein *pmRmLast     (PMProtein *protein);
 
 //char *pmInfo            (PMProtein *protein,char *buffer,size_t n);

@@ -38,7 +38,7 @@ PMProteinModel *xtcopen(PMProteinModel *protein,const char * filename, int mode)
 
 	if(!p)
 		p=(PMProteinModel*)pmCreateNew(PM_TYPE_MODEL);
-	if(!p->type!=PM_TYPE_DENSITY){
+	if(p->type!=PM_TYPE_MODEL){
 		WARN("Mixing different representations (abort): %s",filename);
 		if(p!=protein) pmDelete((PMProtein*)p);
 		return 0;
@@ -105,7 +105,7 @@ PMProteinModel *xtcsave(PMProteinModel *protein,const char * filename, int mode)
 
 	SAY("Open: %s",filename);
 
-	if(!protein->type!=PM_TYPE_MODEL){
+	if(protein->type!=PM_TYPE_MODEL){
 		WARN("Mixing different representations (aborted): %s",filename);
 		return 0;
 	}
