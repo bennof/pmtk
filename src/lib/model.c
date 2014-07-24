@@ -23,7 +23,6 @@
 
 
 
-#define NEWONE_IO
 
 
 
@@ -35,11 +34,25 @@ extern "C"
 #include "calc.h"
 
 
-#include "pdb.h"
 #include "protein_atomic_info.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+
+#define NEWONE_IO
+
+typedef struct XDRFILE XDRFILE;
+extern int read_xtc_natoms(char *fn,int *natoms);
+extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,
+		      float *  box,float *  *x,float *prec);
+extern int write_xtc(XDRFILE *xd,
+		       int natoms,int step,float time,
+		       float *  box,float *  *x,float prec);
+XDRFILE * xdrfile_open    (const char *    path, const char *    mode);
+int xdrfile_close   (XDRFILE *       xfp);
+  
+
 
 void pmPrintInfoM(PMProteinModel* ref)
 {

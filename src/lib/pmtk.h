@@ -42,6 +42,8 @@ extern "C" {
 #define PM_FFT_FORWARD 1
 #define PM_FFT_BACKWARD -1
 
+#define PM_ATOM_FILE_XDR 0
+#define PM_ATOM_FILE_PDB 1
 
 typedef unsigned int  uint;
 typedef unsigned long ulong;

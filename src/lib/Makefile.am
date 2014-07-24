@@ -1,6 +1,6 @@
 # Global Variables
 ACLOCAL_AMFLAGS  =
-AM_CFLAGS        = --pedantic -Wall -std=gnu99 -O2 -I..
+AM_CFLAGS        = -Wall -std=gnu99 -O2 -I..
 AM_LDFLAGS       = 
 
 # Debug section
